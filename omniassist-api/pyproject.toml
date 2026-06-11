@@ -1,0 +1,37 @@
+[project]
+name = "omniassist-api"
+version = "1.0.0"
+description = "OmniAssist AI — Enterprise AI Customer Support & Sales backend"
+requires-python = ">=3.12"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+exclude = ["alembic/versions"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "ASYNC", "S"]
+# UP037: SQLAlchemy Mapped["X"] forward refs must keep quotes.
+# E501: line length is governed by the formatter, not the linter.
+# S105/S106: literal "tokens" here are field names / non-secrets.
+ignore = ["S101", "B008", "UP037", "UP046", "E501", "S105", "S106"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S105", "S106"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+addopts = "-v --strict-markers"
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.mypy]
+python_version = "3.12"
+plugins = ["pydantic.mypy"]
+ignore_missing_imports = true
+warn_unused_ignores = false
+disallow_untyped_defs = false
+
+[tool.coverage.run]
+source = ["app"]
+omit = ["app/main.py", "alembic/*"]

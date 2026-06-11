@@ -1,0 +1,158 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* ===== Light theme (HSL channels) ===== */
+    --background: 0 0% 98%;
+    --subtle: 240 5% 96%;
+    --foreground: 0 0% 4%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 4%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 4%;
+
+    --primary: 239 84% 67%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 243 75% 59%;
+
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 0 0% 10%;
+
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 4% 46%;
+
+    --accent: 240 5% 94%;
+    --accent-foreground: 0 0% 10%;
+
+    --ai: 258 90% 76%;
+    --ai-foreground: 0 0% 100%;
+
+    --success: 142 71% 45%;
+    --warning: 38 92% 50%;
+    --danger: 0 84% 60%;
+    --info: 199 89% 60%;
+
+    --border: 240 6% 90%;
+    --border-strong: 240 5% 84%;
+    --input: 240 6% 90%;
+    --ring: 239 84% 67%;
+  }
+
+  .dark {
+    /* ===== Dark theme (default) ===== */
+    --background: 240 11% 4%;
+    --subtle: 240 10% 6%;
+    --foreground: 0 0% 98%;
+
+    --card: 240 8% 9%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 240 8% 10%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 239 84% 67%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 235 84% 71%;
+
+    --secondary: 240 6% 12%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 240 6% 12%;
+    --muted-foreground: 240 5% 65%;
+
+    --accent: 240 6% 14%;
+    --accent-foreground: 0 0% 98%;
+
+    --ai: 258 90% 76%;
+    --ai-foreground: 0 0% 100%;
+
+    --success: 142 71% 45%;
+    --warning: 38 92% 50%;
+    --danger: 0 84% 60%;
+    --info: 199 89% 64%;
+
+    --border: 240 8% 16%;
+    --border-strong: 240 8% 20%;
+    --input: 240 8% 18%;
+    --ring: 239 84% 67%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  ::selection {
+    background: hsl(239 84% 67% / 0.3);
+  }
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border-strong));
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.4);
+    background-clip: content-box;
+  }
+}
+
+@layer utilities {
+  .glass {
+    background: hsl(var(--card) / 0.6);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border: 1px solid hsl(0 0% 100% / 0.08);
+  }
+  .text-gradient {
+    @apply bg-gradient-brand bg-clip-text text-transparent;
+  }
+  .text-gradient-ai {
+    @apply bg-gradient-ai bg-clip-text text-transparent;
+  }
+  .animated-gradient {
+    background-size: 200% 200%;
+    @apply animate-gradient-x;
+  }
+  /* Shimmer skeleton overlay */
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsl(0 0% 100% / 0.05),
+      transparent
+    );
+    @apply animate-shimmer;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}

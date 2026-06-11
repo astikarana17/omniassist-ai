@@ -1,0 +1,103 @@
+{
+  "$schema": "https://design-tokens.org/schema.json",
+  "meta": {
+    "product": "OmniAssist AI",
+    "version": "1.0.0",
+    "themeStrategy": "dark-first, token-mirrored light",
+    "note": "Token names are theme-agnostic; values swap per mode."
+  },
+  "color": {
+    "brand": {
+      "400": "#818CF8",
+      "500": "#6366F1",
+      "600": "#4F46E5",
+      "violet500": "#8B5CF6"
+    },
+    "ai": "#A78BFA",
+    "semantic": {
+      "success": "#22C55E",
+      "warning": "#F59E0B",
+      "danger": "#EF4444",
+      "info": "#38BDF8"
+    },
+    "dataViz": ["#6366F1", "#22D3EE", "#A78BFA", "#34D399", "#F472B6", "#FBBF24", "#60A5FA", "#F87171"],
+    "dark": {
+      "bgBase": "#08080A",
+      "bgSubtle": "#0E0E11",
+      "surface": "#141417",
+      "surfaceRaised": "#1A1A1F",
+      "border": "#232329",
+      "borderStrong": "#2E2E36",
+      "textPrimary": "#FAFAFA",
+      "textSecondary": "#A1A1AA",
+      "textTertiary": "#71717A"
+    },
+    "light": {
+      "bgBase": "#FAFAFA",
+      "bgSubtle": "#F4F4F5",
+      "surface": "#FFFFFF",
+      "surfaceRaised": "#FFFFFF",
+      "border": "#E4E4E7",
+      "borderStrong": "#D4D4D8",
+      "textPrimary": "#0A0A0A",
+      "textSecondary": "#52525B",
+      "textTertiary": "#A1A1AA"
+    }
+  },
+  "gradient": {
+    "brand": "linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)",
+    "ai": "linear-gradient(135deg, #8B5CF6 0%, #22D3EE 100%)",
+    "surface": "linear-gradient(180deg, #141417 0%, #0E0E11 100%)",
+    "mesh": "radial-gradient(at 20% 10%, rgba(99,102,241,0.10), transparent 50%), radial-gradient(at 80% 30%, rgba(139,92,246,0.08), transparent 50%), radial-gradient(at 50% 90%, rgba(34,211,238,0.06), transparent 50%)"
+  },
+  "space": { "0": "0px", "1": "4px", "2": "8px", "3": "12px", "4": "16px", "5": "20px", "6": "24px", "8": "32px", "10": "40px", "12": "48px", "16": "64px", "24": "96px" },
+  "radius": { "sm": "6px", "md": "8px", "lg": "12px", "xl": "16px", "2xl": "20px", "full": "9999px" },
+  "shadow": {
+    "sm": "0 1px 2px rgba(0,0,0,0.40)",
+    "md": "0 4px 12px rgba(0,0,0,0.45)",
+    "lg": "0 12px 32px rgba(0,0,0,0.55)",
+    "xl": "0 24px 64px rgba(0,0,0,0.60)",
+    "glowBrand": "0 0 0 1px rgba(99,102,241,0.30), 0 8px 32px rgba(99,102,241,0.25)",
+    "glowAi": "0 0 24px rgba(167,139,250,0.30)"
+  },
+  "glass": {
+    "background": "rgba(20,20,23,0.60)",
+    "blur": "20px",
+    "saturate": "140%",
+    "border": "1px solid rgba(255,255,255,0.08)",
+    "innerHighlight": "inset 0 1px 0 rgba(255,255,255,0.06)"
+  },
+  "typography": {
+    "fontFamily": { "ui": "Geist, Inter, system-ui, sans-serif", "mono": "Geist Mono, JetBrains Mono, monospace" },
+    "scale": {
+      "displayXl": { "size": "60px", "line": "64px", "weight": 600, "tracking": "-0.02em" },
+      "display": { "size": "48px", "line": "52px", "weight": 600, "tracking": "-0.02em" },
+      "h1": { "size": "32px", "line": "40px", "weight": 600, "tracking": "-0.01em" },
+      "h2": { "size": "24px", "line": "32px", "weight": 600 },
+      "h3": { "size": "20px", "line": "28px", "weight": 600 },
+      "bodyLg": { "size": "16px", "line": "26px", "weight": 400 },
+      "body": { "size": "14px", "line": "22px", "weight": 400 },
+      "caption": { "size": "12px", "line": "16px", "weight": 500 },
+      "monoKpi": { "size": "28px", "line": "32px", "weight": 500, "numeric": "tabular-nums" }
+    }
+  },
+  "motion": {
+    "instant": { "duration": "80ms", "easing": "ease-out" },
+    "fast": { "duration": "160ms", "easing": "cubic-bezier(0.2,0.8,0.2,1)" },
+    "base": { "duration": "240ms", "easing": "cubic-bezier(0.2,0.8,0.2,1)" },
+    "slow": { "duration": "400ms", "easing": "spring(300,30)" },
+    "ai": { "duration": "600ms", "easing": "spring-soft" },
+    "stagger": "35ms"
+  },
+  "layout": {
+    "maxContent": "1280px",
+    "gridCols": 12,
+    "gutterDesktop": "24px",
+    "gutterMobile": "16px",
+    "sidebar": "264px",
+    "sidebarCollapsed": "72px",
+    "topbar": "56px"
+  },
+  "breakpoints": { "sm": "640px", "md": "768px", "lg": "1024px", "xl": "1280px", "2xl": "1536px" },
+  "zIndex": { "base": 0, "dropdown": 1000, "sticky": 1100, "drawer": 1200, "modal": 1300, "toast": 1400, "commandPalette": 1500, "tooltip": 1600 }
+}

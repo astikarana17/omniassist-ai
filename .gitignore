@@ -1,0 +1,48 @@
+# ───────────── SECRETS — never commit ─────────────
+.env
+.env.*
+!.env.example
+!.env.local.example
+**/.env
+**/.env.*
+!**/.env.example
+!**/.env.local.example
+.mcp.json
+**/.mcp.json
+*.pem
+*.key
+secrets.*
+tcs-services.yml
+
+# ───────────── Tooling / local data ─────────────
+.claude/
+.playwright-mcp/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
+
+# ───────────── Node / Next.js ─────────────
+node_modules/
+**/node_modules/
+**/.next/
+**/out/
+.turbo/
+*.tsbuildinfo
+
+# ───────────── Python ─────────────
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+
+# ───────────── Generated KB artifacts ─────────────
+omniassist-api/data/
+**/chunks.json
