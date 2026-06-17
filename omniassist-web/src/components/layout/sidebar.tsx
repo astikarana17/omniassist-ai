@@ -65,11 +65,14 @@ function SidebarItem({
   item,
   pathname,
   collapsed,
+  badgeCount,
 }: {
   item: NavItem;
   pathname: string;
   collapsed: boolean;
+  badgeCount?: number;
 }) {
+  const badge = badgeCount && badgeCount > 0 ? badgeCount : item.badge;
   const isActive =
     pathname === item.href ||
     (item.href !== "/dashboard" && pathname.startsWith(item.href));
@@ -113,9 +116,9 @@ function SidebarItem({
       {!collapsed && (
         <>
           <span className="relative flex-1 truncate">{item.label}</span>
-          {item.badge ? (
+          {badge ? (
             <span className="relative rounded-full bg-primary/15 px-1.5 py-0.5 text-[10px] font-semibold text-primary">
-              {item.badge}
+              {badge}
             </span>
           ) : null}
           {hasChildren && (

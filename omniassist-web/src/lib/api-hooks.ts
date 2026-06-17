@@ -5,7 +5,7 @@
 // API URL is set, hooks fetch live and map snake_case DTOs to the UI types.
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { apiConfigured, apiFetch } from "@/lib/api";
+import { apiConfigured, apiFetch, apiUpload } from "@/lib/api";
 import { useAuthStore } from "@/store/auth-store";
 import {
   businessImpact,
@@ -83,6 +83,28 @@ export function useOAuthCallback() {
         auth: false,
       }),
     onSuccess: applySession,
+  });
+}
+
+export function useForgotPassword() {
+  return useMutation({
+    mutationFn: (vars: { email: string }) =>
+      apiFetch<{ message: string }>("/auth/forgot-password", {
+        method: "POST",
+        body: vars,
+        auth: false,
+      }),
+  });
+}
+
+export function useResetPassword() {
+  return useMutation({
+    mutationFn: (vars: { token: string; new_password: string }) =>
+      apiFetch<{ message: string }>("/auth/reset-password", {
+        method: "POST",
+        body: vars,
+        auth: false,
+      }),
   });
 }
 
@@ -613,11 +635,12 @@ export interface AgentTestResult {
 }
 export function useTestAgent(agentId: string) {
   return useMutation({
+    // apiFetch already unwraps the {data,error} envelope — don't double-unwrap.
     mutationFn: (message: string) =>
-      apiFetch<{ data: AgentTestResult }>(`/agents/${agentId}/test`, {
+      apiFetch<AgentTestResult>(`/agents/${agentId}/test`, {
         method: "POST",
         body: { message },
-      }).then((r) => r.data),
+      }),
   });
 }
 
@@ -842,6 +865,252 @@ export function useAnalyticsOverview() {
     queryKey: ["analytics-overview"],
     queryFn: async () =>
       apiConfigured() ? apiFetch<AnalyticsOverview>("/analytics/overview?days=30") : null,
+  });
+}
+
+// ---------------- Prescription Intelligence (Healthcare) ----------------
+export interface RxMedicineExtracted {
+  name: string; dosage?: string | null; frequency?: string | null;
+  duration?: string | null; notes?: string | null;
+}
+export interface RxExplanation {
+  name: string; generic_name?: string | null; what_it_is?: string | null;
+  why_prescribed?: string | null; how_it_works?: string | null;
+  side_effects?: string | null; timing?: string | null;
+  food_instructions?: string | null; warnings?: string | null; grounded?: boolean;
+}
+export interface RxCondition { condition: string; confidence: number; explanation?: string | null }
+export interface PrescriptionDTO {
+  id: string; status: "processing" | "ready" | "failed";
+  doctor_name?: string | null; hospital_name?: string | null; prescribed_date?: string | null;
+  medicines: RxMedicineExtracted[]; analysis: RxExplanation[];
+  possible_conditions: RxCondition[]; error?: string | null;
+  created_at: string; disclaimer: string;
+}
+export interface PrescriptionListDTO {
+  id: string; status: "processing" | "ready" | "failed";
+  doctor_name?: string | null; hospital_name?: string | null;
+  prescribed_date?: string | null; medicine_count: number; created_at: string;
+}
+
+export function usePrescriptions() {
+  return useQuery<PrescriptionListDTO[] | null>({
+    queryKey: ["prescriptions"],
+    queryFn: async () => {
+      if (!apiConfigured()) return null;
+      const page = await apiFetch<Page<PrescriptionListDTO>>("/prescriptions?limit=100");
+      return page.items;
+    },
+  });
+}
+
+export function usePrescription(id: string | null) {
+  return useQuery<PrescriptionDTO | null>({
+    queryKey: ["prescription", id],
+    enabled: !!id && apiConfigured(),
+    queryFn: async () => (id ? apiFetch<PrescriptionDTO>(`/prescriptions/${id}`) : null),
+  });
+}
+
+export function useUploadPrescription() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (file: File) => {
+      const form = new FormData();
+      form.append("file", file);
+      return apiUpload<PrescriptionDTO>("/prescriptions", form);
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["prescriptions"] }),
+  });
+}
+
+export function useDeletePrescription() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => apiFetch(`/prescriptions/${id}`, { method: "DELETE" }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["prescriptions"] }),
+  });
+}
+
+// ---------------- Medical Report Analyzer (Healthcare) ----------------
+export interface ReportValueDTO {
+  test_name: string; value?: string | null; unit?: string | null;
+  reference_range?: string | null; status: "normal" | "high" | "low" | "borderline" | "unknown";
+}
+export interface ReportFindingDTO {
+  test_name: string; status: string; meaning?: string | null; advice?: string | null;
+}
+export interface MedicalReportDTO {
+  id: string; status: "processing" | "ready" | "failed"; report_type?: string | null;
+  values: ReportValueDTO[]; analysis: ReportFindingDTO[]; summary?: string | null;
+  error?: string | null; created_at: string; disclaimer: string;
+}
+export interface ReportListDTO {
+  id: string; status: "processing" | "ready" | "failed"; report_type?: string | null;
+  value_count: number; abnormal_count: number; created_at: string;
+}
+
+export function useReports() {
+  return useQuery<ReportListDTO[] | null>({
+    queryKey: ["medical-reports"],
+    queryFn: async () => {
+      if (!apiConfigured()) return null;
+      const page = await apiFetch<Page<ReportListDTO>>("/medical-reports?limit=100");
+      return page.items;
+    },
+  });
+}
+
+export function useReport(id: string | null) {
+  return useQuery<MedicalReportDTO | null>({
+    queryKey: ["medical-report", id],
+    enabled: !!id && apiConfigured(),
+    queryFn: async () => (id ? apiFetch<MedicalReportDTO>(`/medical-reports/${id}`) : null),
+  });
+}
+
+export function useUploadReport() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (file: File) => {
+      const form = new FormData();
+      form.append("file", file);
+      return apiUpload<MedicalReportDTO>("/medical-reports", form);
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["medical-reports"] }),
+  });
+}
+
+export function useDeleteReport() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => apiFetch(`/medical-reports/${id}`, { method: "DELETE" }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["medical-reports"] }),
+  });
+}
+
+// ---------------- Clinic: Patients / Doctors / Appointments ----------------
+export interface PatientDTO {
+  id: string; name: string; email?: string | null; phone?: string | null;
+  date_of_birth?: string | null; gender?: string | null; blood_group?: string | null;
+  allergies?: string | null; medical_history?: string | null; created_at: string;
+}
+export interface DoctorDTO {
+  id: string; name: string; email?: string | null; phone?: string | null;
+  specialty?: string | null; department?: string | null; license_no?: string | null;
+  created_at: string;
+}
+export interface AppointmentDTO {
+  id: string; patient_id?: string | null; doctor_id?: string | null;
+  patient_name?: string | null; doctor_name?: string | null;
+  scheduled_at: string; duration_min: number; status: string;
+  reason?: string | null; notes?: string | null; created_at: string;
+}
+
+export function usePatients() {
+  return useQuery<PatientDTO[] | null>({
+    queryKey: ["patients"],
+    queryFn: async () =>
+      apiConfigured() ? (await apiFetch<Page<PatientDTO>>("/patients?limit=200")).items : null,
+  });
+}
+export function useCreatePatient() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: Partial<PatientDTO>) =>
+      apiFetch<PatientDTO>("/patients", { method: "POST", body }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["patients"] }),
+  });
+}
+export function useDeletePatient() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => apiFetch(`/patients/${id}`, { method: "DELETE" }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["patients"] }),
+  });
+}
+
+export function useDoctors() {
+  return useQuery<DoctorDTO[] | null>({
+    queryKey: ["doctors"],
+    queryFn: async () =>
+      apiConfigured() ? (await apiFetch<Page<DoctorDTO>>("/doctors?limit=200")).items : null,
+  });
+}
+export function useCreateDoctor() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: Partial<DoctorDTO>) =>
+      apiFetch<DoctorDTO>("/doctors", { method: "POST", body }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["doctors"] }),
+  });
+}
+export function useDeleteDoctor() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => apiFetch(`/doctors/${id}`, { method: "DELETE" }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["doctors"] }),
+  });
+}
+
+export interface ClinicOverviewDTO {
+  patients: number; doctors: number; appointments_total: number;
+  appointments_today: number; appointments_upcoming: number;
+  prescriptions: number; reports: number; medicines: number;
+}
+export function useClinicOverview() {
+  return useQuery<ClinicOverviewDTO | null>({
+    queryKey: ["clinic-overview"],
+    queryFn: async () =>
+      apiConfigured() ? apiFetch<ClinicOverviewDTO>("/clinic/overview") : null,
+  });
+}
+
+export function useAppointments() {
+  return useQuery<AppointmentDTO[] | null>({
+    queryKey: ["appointments"],
+    queryFn: async () =>
+      apiConfigured() ? (await apiFetch<Page<AppointmentDTO>>("/appointments?limit=200")).items : null,
+  });
+}
+export function useCreateAppointment() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: {
+      patient_id: string; doctor_id?: string | null; scheduled_at: string;
+      duration_min?: number; reason?: string | null;
+    }) => apiFetch<AppointmentDTO>("/appointments", { method: "POST", body }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["appointments"] }),
+  });
+}
+export function useUpdateAppointment() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, ...body }: { id: string; status?: string; scheduled_at?: string; notes?: string }) =>
+      apiFetch<AppointmentDTO>(`/appointments/${id}`, { method: "PATCH", body }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["appointments"] }),
+  });
+}
+export function useDeleteAppointment() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => apiFetch(`/appointments/${id}`, { method: "DELETE" }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["appointments"] }),
+  });
+}
+
+// ---------------- AI Health Assistant (Healthcare) ----------------
+export interface HealthChatMsg {
+  role: "user" | "assistant";
+  content: string;
+}
+export function useHealthChat() {
+  return useMutation({
+    mutationFn: (messages: HealthChatMsg[]) =>
+      apiFetch<{ reply: string; disclaimer: string }>("/health-assistant/chat", {
+        method: "POST",
+        body: { messages },
+      }),
   });
 }
 

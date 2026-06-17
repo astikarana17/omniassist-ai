@@ -5,24 +5,25 @@ import { Providers } from "@/components/providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
   title: {
-    default: "OmniAssist AI — AI Customer Support & Sales Platform",
-    template: "%s · OmniAssist AI",
+    default: "OmniAssist Health — Understand Your Prescriptions & Lab Reports",
+    template: "%s · OmniAssist Health",
   },
   description:
-    "One AI brain across chat, WhatsApp, email and voice — grounded in your knowledge, escalates to humans. Enterprise AI customer support & sales agent platform.",
+    "Upload a prescription or lab report and get a clear, simple explanation of every medicine and result — plus an AI health assistant for your questions. Not a diagnosis.",
   keywords: [
-    "AI customer support",
-    "AI sales agent",
-    "WhatsApp support",
-    "RAG knowledge base",
-    "helpdesk",
-    "SaaS",
+    "prescription AI",
+    "lab report analyzer",
+    "medicine information",
+    "AI health assistant",
+    "healthcare AI copilot",
+    "understand your health",
   ],
-  authors: [{ name: "OmniAssist AI" }],
+  authors: [{ name: "OmniAssist Health" }],
   openGraph: {
-    title: "OmniAssist AI",
-    description: "The AI workforce for customer support & sales.",
+    title: "OmniAssist Health",
+    description: "Understand your prescriptions, lab reports and health — in plain language.",
     type: "website",
   },
 };

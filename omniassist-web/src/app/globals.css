@@ -4,81 +4,81 @@
 
 @layer base {
   :root {
-    /* ===== Light theme (HSL channels) ===== */
-    --background: 0 0% 98%;
-    --subtle: 240 5% 96%;
-    --foreground: 0 0% 4%;
+    /* ===== Light — Radix-derived, WCAG-AA verified (slate/indigo/cyan/jade/amber/red) ===== */
+    --background: 240 20% 99%;
+    --subtle: 240 22% 97%;
+    --foreground: 210 14% 13%;
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 4%;
+    --card-foreground: 210 14% 13%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 4%;
+    --popover-foreground: 210 14% 13%;
 
-    --primary: 239 84% 67%;
+    --primary: 226 70% 55%;       /* Radix indigo 9 — Royal Indigo */
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 243 75% 59%;
+    --primary-hover: 226 66% 49%;
 
-    --secondary: 240 5% 96%;
-    --secondary-foreground: 0 0% 10%;
+    --secondary: 240 13% 95%;
+    --secondary-foreground: 220 14% 22%;
 
-    --muted: 240 5% 96%;
-    --muted-foreground: 240 4% 46%;
+    --muted: 240 12% 93%;
+    --muted-foreground: 220 10% 38%;
 
-    --accent: 240 5% 94%;
-    --accent-foreground: 0 0% 10%;
+    --accent: 230 13% 90%;
+    --accent-foreground: 210 14% 16%;
 
-    --ai: 258 90% 76%;
+    --ai: 191 90% 35%;            /* Electric Cyan (darkened for AA text on white) */
     --ai-foreground: 0 0% 100%;
 
-    --success: 142 71% 45%;
-    --warning: 38 92% 50%;
-    --danger: 0 84% 60%;
-    --info: 199 89% 60%;
+    --success: 151 62% 36%;       /* Emerald */
+    --warning: 35 92% 42%;        /* Amber (darkened for AA on white) */
+    --danger: 358 70% 52%;
+    --info: 206 90% 45%;
 
-    --border: 240 6% 90%;
-    --border-strong: 240 5% 84%;
-    --input: 240 6% 90%;
-    --ring: 239 84% 67%;
+    --border: 240 10% 80%;
+    --border-strong: 233 10% 70%;
+    --input: 240 10% 78%;
+    --ring: 226 70% 55%;
   }
 
   .dark {
-    /* ===== Dark theme (default) ===== */
-    --background: 240 11% 4%;
-    --subtle: 240 10% 6%;
-    --foreground: 0 0% 98%;
+    /* ===== Dark (default) — navy brand bg + Radix slateDark/indigoDark/cyanDark, AA verified ===== */
+    --background: 222 47% 8%;     /* Rich navy #0B1220 (brand) */
+    --subtle: 222 42% 10%;
+    --foreground: 220 9% 94%;     /* Radix slate 12 */
 
-    --card: 240 8% 9%;
-    --card-foreground: 0 0% 98%;
+    --card: 222 18% 11%;          /* slateDark 2, navy-tinted */
+    --card-foreground: 220 9% 94%;
 
-    --popover: 240 8% 10%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 222 16% 14%;
+    --popover-foreground: 220 9% 94%;
 
-    --primary: 239 84% 67%;
+    --primary: 226 70% 55%;       /* indigoDark 9 — Royal Indigo */
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 235 84% 71%;
+    --primary-hover: 228 73% 61%; /* indigoDark 10 */
 
-    --secondary: 240 6% 12%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 222 12% 15%;
+    --secondary-foreground: 220 9% 94%;
 
-    --muted: 240 6% 12%;
-    --muted-foreground: 240 5% 65%;
+    --muted: 220 10% 17%;
+    --muted-foreground: 216 10% 72%;   /* slate 11 — AA body on bg */
 
-    --accent: 240 6% 14%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 220 11% 21%;
+    --accent-foreground: 220 9% 94%;
 
-    --ai: 258 90% 76%;
-    --ai-foreground: 0 0% 100%;
+    --ai: 191 91% 49%;            /* cyanDark — Electric Cyan */
+    --ai-foreground: 222 47% 11%; /* dark navy on bright cyan */
 
-    --success: 142 71% 45%;
-    --warning: 38 92% 50%;
-    --danger: 0 84% 60%;
-    --info: 199 89% 64%;
+    --success: 151 58% 45%;       /* Emerald */
+    --warning: 42 100% 62%;       /* Amber Gold */
+    --danger: 358 78% 64%;
+    --info: 200 90% 60%;
 
-    --border: 240 8% 16%;
-    --border-strong: 240 8% 20%;
-    --input: 240 8% 18%;
-    --ring: 239 84% 67%;
+    --border: 218 11% 30%;        /* lifted for visible UI borders (AA) */
+    --border-strong: 218 11% 42%;
+    --input: 218 11% 34%;
+    --ring: 226 75% 64%;          /* visible indigo focus */
   }
 }
 
@@ -88,12 +88,11 @@
   }
   body {
     @apply bg-background text-foreground antialiased;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1;
   }
   ::selection {
-    background: hsl(239 84% 67% / 0.3);
+    background: hsl(243 75% 62% / 0.32);
   }
-  /* Custom scrollbar */
   ::-webkit-scrollbar {
     width: 10px;
     height: 10px;
@@ -108,18 +107,33 @@
     background-clip: content-box;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--muted-foreground) / 0.4);
+    background: hsl(var(--primary) / 0.45);
     background-clip: content-box;
   }
 }
 
 @layer utilities {
+  /* ---- Glassmorphism ---- */
   .glass {
-    background: hsl(var(--card) / 0.6);
-    backdrop-filter: blur(20px) saturate(140%);
-    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    background: hsl(var(--card) / 0.55);
+    backdrop-filter: blur(22px) saturate(150%);
+    -webkit-backdrop-filter: blur(22px) saturate(150%);
+    border: 1px solid hsl(0 0% 100% / 0.07);
+  }
+  .glass-strong {
+    background: hsl(var(--card) / 0.78);
+    backdrop-filter: blur(28px) saturate(160%);
+    -webkit-backdrop-filter: blur(28px) saturate(160%);
     border: 1px solid hsl(0 0% 100% / 0.08);
   }
+  /* Premium card: subtle top highlight + soft depth */
+  .surface {
+    background: hsl(var(--card) / 0.7);
+    border: 1px solid hsl(0 0% 100% / 0.06);
+    box-shadow: inset 0 1px 0 0 hsl(0 0% 100% / 0.05), 0 10px 30px -10px hsl(222 47% 2% / 0.6);
+  }
+
+  /* ---- Gradient text ---- */
   .text-gradient {
     @apply bg-gradient-brand bg-clip-text text-transparent;
   }
@@ -130,7 +144,28 @@
     background-size: 200% 200%;
     @apply animate-gradient-x;
   }
-  /* Shimmer skeleton overlay */
+
+  /* ---- Aurora / mesh background ---- */
+  .aurora {
+    background:
+      radial-gradient(42% 50% at 14% 18%, rgba(79, 70, 229, 0.30), transparent 62%),
+      radial-gradient(36% 46% at 86% 12%, rgba(34, 211, 238, 0.22), transparent 62%),
+      radial-gradient(46% 52% at 78% 82%, rgba(16, 185, 129, 0.16), transparent 62%),
+      radial-gradient(40% 46% at 22% 88%, rgba(99, 102, 241, 0.18), transparent 62%);
+  }
+  .grid-overlay {
+    background-image: linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+  }
+
+  /* ---- Conic border glow (for premium cards / orbs) ---- */
+  .ring-glow {
+    box-shadow: 0 0 0 1px hsl(var(--primary) / 0.25), 0 0 40px -8px hsl(var(--primary) / 0.4);
+  }
+
+  /* ---- Shimmer skeleton ---- */
   .shimmer {
     position: relative;
     overflow: hidden;
@@ -140,14 +175,10 @@
     position: absolute;
     inset: 0;
     transform: translateX(-100%);
-    background: linear-gradient(
-      90deg,
-      transparent,
-      hsl(0 0% 100% / 0.05),
-      transparent
-    );
+    background: linear-gradient(90deg, transparent, hsl(0 0% 100% / 0.06), transparent);
     @apply animate-shimmer;
   }
+
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }

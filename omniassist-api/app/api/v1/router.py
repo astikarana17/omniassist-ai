@@ -7,10 +7,12 @@ from app.api.v1.routers import (
     audit,
     auth,
     billing,
+    clinic,
     company,
     conversations,
     customer_success,
     employee,
+    health_assistant,
     insights,
     knowledge,
     knowledge_gaps,
@@ -19,7 +21,9 @@ from app.api.v1.routers import (
     members,
     notifications,
     onboarding,
+    prescriptions,
     public,
+    reports,
     tickets,
     workflows,
 )
@@ -49,6 +53,12 @@ api_router.include_router(insights.router)
 api_router.include_router(meetings.router)
 api_router.include_router(workflows.router)
 api_router.include_router(employee.router)
+
+# Healthcare AI Copilot
+api_router.include_router(prescriptions.router)
+api_router.include_router(reports.router)
+api_router.include_router(health_assistant.router)
+api_router.include_router(clinic.router)
 
 # Public + webhooks (no JWT; verified by signature / slug)
 api_router.include_router(public.router)

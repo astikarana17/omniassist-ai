@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Search, ChevronsUpDown, Sparkles, LogOut, User as UserIcon, Settings } from "lucide-react";
+import { Search, ChevronsUpDown, LogOut, User as UserIcon, Settings, Bell } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useUiStore } from "@/store/ui-store";
 import { useAuthStore } from "@/store/auth-store";
 import { useLogout } from "@/lib/api-hooks";
-import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/shared/user-avatar";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { NotificationsPopover } from "@/components/layout/notifications-popover";
@@ -23,7 +22,7 @@ import {
 import { currentUser } from "@/lib/data";
 
 export function Navbar() {
-  const { setCommandOpen, toggleCopilot } = useUiStore();
+  const { setCommandOpen } = useUiStore();
   const router = useRouter();
   const logout = useLogout();
   const { user, org } = useAuthStore();
@@ -84,15 +83,6 @@ export function Navbar() {
       </button>
 
       <div className="ml-auto flex items-center gap-1">
-        <Button
-          variant="ai"
-          size="sm"
-          className="hidden md:inline-flex"
-          onClick={toggleCopilot}
-        >
-          <Sparkles className="h-4 w-4" />
-          Copilot
-        </Button>
         <ThemeToggle />
         <NotificationsPopover />
 
@@ -119,6 +109,11 @@ export function Navbar() {
             <DropdownMenuItem asChild>
               <Link href="/settings">
                 <Settings /> Settings
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/notifications">
+                <Bell /> Notifications
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />

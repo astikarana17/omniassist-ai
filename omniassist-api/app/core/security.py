@@ -99,10 +99,16 @@ def constant_time_compare(a: str, b: str) -> bool:
 
 # ---------- Field-level encryption (channel secrets, SMTP creds, etc.) ----------
 def _fernet() -> Fernet:
-    key = settings.ENCRYPTION_KEY or Fernet.generate_key().decode()
-    if isinstance(key, str):
-        key = key.encode()
-    return Fernet(key)
+    # NEVER auto-generate a key: a throwaway key would encrypt secrets that can
+    # never be decrypted after a restart/another worker. Require a stable key.
+    key = settings.ENCRYPTION_KEY
+    if not key:
+        raise RuntimeError(
+            "ENCRYPTION_KEY is not set. Generate one with "
+            "`python -c \"from cryptography.fernet import Fernet; "
+            "print(Fernet.generate_key().decode())\"` and set it in the environment."
+        )
+    return Fernet(key.encode())
 
 
 def encrypt_value(plaintext: str) -> str:

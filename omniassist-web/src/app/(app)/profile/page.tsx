@@ -17,10 +17,26 @@ import {
 } from "@/components/ui/select";
 import { UserAvatar } from "@/components/shared/user-avatar";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
-import { currentUser } from "@/lib/data";
+import { useAuthStore } from "@/store/auth-store";
+import { useLogout } from "@/lib/api-hooks";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export default function ProfilePage() {
+  const router = useRouter();
+  const logout = useLogout();
+  const user = useAuthStore((s) => s.user);
+  const org = useAuthStore((s) => s.org);
+  const name = user?.fullName ?? "Your account";
+  const email = user?.email ?? "";
+  const title = user?.title ?? "";
+  const role = org?.role ?? "member";
+
+  const signOut = async () => {
+    await logout.mutateAsync();
+    router.push("/login");
+  };
+
   return (
     <div className="mx-auto max-w-3xl space-y-6 p-4 sm:p-6">
       <PageHeader title="Profile" description="Manage your personal details and preferences." />
@@ -28,15 +44,15 @@ export default function ProfilePage() {
       <Card>
         <CardContent className="flex flex-col items-center gap-4 p-6 sm:flex-row sm:items-center">
           <div className="relative">
-            <UserAvatar name={currentUser.name} src={currentUser.avatar} className="h-20 w-20" />
+            <UserAvatar name={name} src={user?.avatarUrl ?? undefined} className="h-20 w-20" />
             <button className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md">
               <Camera className="h-3.5 w-3.5" />
             </button>
           </div>
           <div className="text-center sm:text-left">
-            <p className="text-lg font-semibold">{currentUser.name}</p>
-            <p className="text-sm text-muted-foreground">{currentUser.title}</p>
-            <Badge variant="default" className="mt-1.5 capitalize">{currentUser.role}</Badge>
+            <p className="text-lg font-semibold">{name}</p>
+            <p className="text-sm text-muted-foreground">{title || email}</p>
+            <Badge variant="default" className="mt-1.5 capitalize">{role}</Badge>
           </div>
         </CardContent>
       </Card>
@@ -46,15 +62,15 @@ export default function ProfilePage() {
         <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <Label>Full name</Label>
-            <Input defaultValue={currentUser.name} />
+            <Input defaultValue={name} />
           </div>
           <div className="space-y-2">
             <Label>Email</Label>
-            <Input type="email" defaultValue={currentUser.email} />
+            <Input type="email" defaultValue={email} />
           </div>
           <div className="space-y-2">
             <Label>Job title</Label>
-            <Input defaultValue={currentUser.title} />
+            <Input defaultValue={title} />
           </div>
           <div className="space-y-2">
             <Label>Timezone</Label>
@@ -139,8 +155,15 @@ export default function ProfilePage() {
       </Card>
 
       <div className="flex items-center justify-between">
-        <Button variant="ghost" className="text-danger"><LogOut className="h-4 w-4" /> Sign out</Button>
-        <Button variant="gradient" onClick={() => toast.success("Profile updated")}>Save changes</Button>
+        <Button variant="ghost" className="text-danger" onClick={signOut} loading={logout.isPending}>
+          <LogOut className="h-4 w-4" /> Sign out
+        </Button>
+        <Button
+          variant="gradient"
+          onClick={() => toast("Profile editing is coming soon.", { description: "Saved profile fields aren't persisted yet." })}
+        >
+          Save changes
+        </Button>
       </div>
     </div>
   );

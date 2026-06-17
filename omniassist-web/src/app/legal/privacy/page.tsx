@@ -1,4 +1,4 @@
-export const metadata = { title: "Privacy Policy — OmniAssist AI" };
+export const metadata = { title: "Privacy Policy — OmniAssist Health" };
 
 export default function PrivacyPage() {
   return (
@@ -7,23 +7,25 @@ export default function PrivacyPage() {
       <p><strong>Last updated:</strong> June 2026</p>
 
       <p>
-        OmniAssist AI (&quot;we&quot;, &quot;us&quot;) provides an AI-powered customer support and
-        sales platform. This policy explains what data we collect, how we use it, and your rights.
+        OmniAssist Health (&quot;we&quot;, &quot;us&quot;) provides an AI-powered platform that helps
+        people understand prescriptions, lab reports and general health questions. This policy
+        explains what data we collect, how we use it, and your rights.
       </p>
 
       <h2>1. Data we collect</h2>
       <p>
-        <strong>Account data</strong> — name, work email, and organization details you provide at
-        signup. <strong>Workspace content</strong> — knowledge-base documents, conversations,
-        tickets, and leads you create. <strong>Usage data</strong> — logs, device and IP
-        information used to operate and secure the service.
+        <strong>Account data</strong> — name, email, and clinic/organization details you provide at
+        signup. <strong>Health content</strong> — prescription and lab-report images, extracted
+        values, patient records and assistant conversations you create. <strong>Usage data</strong>{" "}
+        — logs, device and IP information used to operate and secure the service.
       </p>
 
       <h2>2. How we use data</h2>
       <p>
-        To deliver the service, ground AI answers in your own knowledge base, provide analytics,
-        secure the platform, and provide support. We do not sell your data, and we do not use your
-        workspace content to train third-party foundation models.
+        To deliver the service — read and explain prescriptions and reports, answer general health
+        questions, and secure the platform. We do not sell your data, and we do not use your health
+        content to train third-party foundation models. OmniAssist Health provides AI-generated
+        information only and is not a substitute for professional medical advice or diagnosis.
       </p>
 
       <h2>3. Sub-processors</h2>

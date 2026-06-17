@@ -1,22 +1,22 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Sparkles, TrendingUp, AlertTriangle, Lightbulb, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { aiInsights } from "@/lib/data";
-import type { AiInsight } from "@/types";
+import { useInsights } from "@/lib/api-hooks";
 import { cn } from "@/lib/utils";
 
-const kindConfig: Record<
-  AiInsight["kind"],
-  { icon: typeof TrendingUp; color: string; ring: string }
-> = {
+const kindConfig: Record<string, { icon: typeof TrendingUp; color: string; ring: string }> = {
   trend: { icon: TrendingUp, color: "text-info", ring: "border-l-info" },
   risk: { icon: AlertTriangle, color: "text-danger", ring: "border-l-danger" },
   opportunity: { icon: Lightbulb, color: "text-ai", ring: "border-l-ai" },
 };
 
 export function AiInsights() {
+  const { data: insights = [] } = useInsights();
+  const top = insights.slice(0, 4);
+
   return (
     <Card className="relative overflow-hidden">
       <div className="pointer-events-none absolute inset-0 bg-gradient-mesh opacity-40" />
@@ -25,10 +25,20 @@ export function AiInsights() {
           <Sparkles className="h-4 w-4 text-white" />
         </span>
         <CardTitle className="text-base">AI Insights</CardTitle>
+        {top.length > 0 && (
+          <Link href="/insights" className="ml-auto text-xs text-primary hover:underline">
+            View all →
+          </Link>
+        )}
       </CardHeader>
       <CardContent className="relative space-y-3">
-        {aiInsights.map((insight, i) => {
-          const cfg = kindConfig[insight.kind];
+        {top.length === 0 && (
+          <p className="py-6 text-center text-sm text-muted-foreground">
+            Insights appear here as your AI handles more conversations.
+          </p>
+        )}
+        {top.map((insight, i) => {
+          const cfg = kindConfig[insight.kind] ?? kindConfig.opportunity;
           const Icon = cfg.icon;
           return (
             <motion.div
@@ -46,12 +56,15 @@ export function AiInsights() {
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium leading-snug">{insight.title}</p>
                   <p className="mt-0.5 text-xs text-muted-foreground">
-                    {insight.recommendation}
+                    {insight.recommendation ?? insight.summary}
                   </p>
-                  <button className={cn("mt-2 inline-flex items-center gap-1 text-xs font-medium", cfg.color)}>
-                    {insight.actionLabel}
+                  <Link
+                    href="/insights"
+                    className={cn("mt-2 inline-flex items-center gap-1 text-xs font-medium", cfg.color)}
+                  >
+                    View details
                     <ArrowRight className="h-3 w-3" />
-                  </button>
+                  </Link>
                 </div>
               </div>
             </motion.div>

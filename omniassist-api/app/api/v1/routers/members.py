@@ -87,6 +87,9 @@ async def invite_member(
     )
     from app.workers.tasks import send_invite_email
 
+    # Commit the membership BEFORE enqueueing the email so a fast worker can't
+    # process the invite before the row exists (and so we don't email on rollback).
+    await db.commit()
     send_invite_email.delay(payload.email, ctx.user.full_name, payload.role)
     return MessageResponse(message="Invitation sent.")
 

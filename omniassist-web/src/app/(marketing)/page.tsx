@@ -4,49 +4,49 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
-  MessageSquare,
   Sparkles,
-  Globe,
-  Mail,
-  Phone,
-  MessageCircle,
-  BookOpen,
-  BarChart3,
+  Pill,
+  FlaskConical,
+  MessageCircleHeart,
+  Database,
   ShieldCheck,
-  Zap,
+  Stethoscope,
+  HeartPulse,
   Check,
+  Zap,
 } from "lucide-react";
 import { Logo } from "@/components/shared/logo";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { LiveDemo } from "@/components/marketing/live-demo";
+import { StackCard, FadeIn } from "@/components/marketing/stacking-cards";
 
-const channels = [
-  { icon: Globe, label: "Website Chat" },
-  { icon: MessageCircle, label: "WhatsApp" },
-  { icon: Mail, label: "Email" },
-  { icon: Phone, label: "Voice" },
+const capabilities = [
+  { icon: Pill, label: "Prescription AI" },
+  { icon: FlaskConical, label: "Report Analyzer" },
+  { icon: MessageCircleHeart, label: "Health Assistant" },
+  { icon: Database, label: "Medicine Intelligence" },
 ];
 
 const features = [
-  { icon: Sparkles, title: "AI Support & Sales Agents", desc: "RAG-grounded answers with sources and confidence, plus a sales agent that qualifies and books demos.", span: "lg:col-span-2" },
-  { icon: BookOpen, title: "RAG Knowledge Base", desc: "Upload docs, crawl your site, sync FAQs — instantly searchable.", span: "" },
-  { icon: ShieldCheck, title: "Human Handoff", desc: "Seamless AI → human with full context and presence.", span: "" },
-  { icon: BarChart3, title: "Analytics", desc: "Deflection, CSAT, response time, revenue and sentiment in one place.", span: "lg:col-span-2" },
+  { icon: Pill, title: "Prescription Intelligence", desc: "Upload a prescription photo — every medicine explained simply: what it's for, how it works, side effects, timing and food notes.", illo: "/illustrations/prescriptions.svg", tag: "Prescriptions" },
+  { icon: FlaskConical, title: "Medical Report Analyzer", desc: "CBC, thyroid, sugar, lipid — values extracted, abnormalities flagged, explained in plain words.", illo: "/illustrations/reports.svg", tag: "Lab reports" },
+  { icon: MessageCircleHeart, title: "AI Health Assistant", desc: "Ask about a medicine, symptom or result — clear answers, never a diagnosis.", illo: "/illustrations/assistant.svg", tag: "Assistant" },
+  { icon: Database, title: "250k+ Medicine Knowledge", desc: "Real Indian brand → composition intelligence grounds every answer, so Azithral becomes Azithromycin automatically.", illo: "/illustrations/doctors.svg", tag: "Knowledge base" },
 ];
 
 const stats = [
-  { value: "70%+", label: "of questions resolvable by AI" },
-  { value: "<5s", label: "typical first response" },
-  { value: "4", label: "channels, one AI brain" },
-  { value: "30+", label: "languages supported" },
+  { value: "250k+", label: "medicines in the knowledge base" },
+  { value: "<10s", label: "to explain a prescription" },
+  { value: "3", label: "AI tools: Rx · Reports · Assistant" },
+  { value: "24/7", label: "health answers, no waiting" },
 ];
 
 const plans = [
-  { name: "Starter", price: "$49", period: "/mo", desc: "For small teams getting started.", features: ["1 AI Support Agent", "Website chat", "1,000 conversations/mo", "Knowledge base (100 docs)", "Email support"], cta: "Start free trial", highlight: false },
-  { name: "Growth", price: "$199", period: "/mo", desc: "For scaling support & sales.", features: ["Support + Sales agents", "Web + WhatsApp + Email", "10k conversations/mo", "Ticketing + workflows", "Full analytics + handoff"], cta: "Start free trial", highlight: true },
-  { name: "Enterprise", price: "Custom", period: "", desc: "For large orgs with SLAs.", features: ["All channels incl. Voice", "Unlimited conversations", "SSO + RBAC + audit logs", "Dedicated CSM + SLA"], cta: "Contact sales", highlight: false },
+  { name: "Patient", price: "Free", period: "", desc: "Understand your own care.", features: ["Prescription AI", "Medical Report Analyzer", "AI Health Assistant", "10 uploads / month"], cta: "Start free", highlight: false },
+  { name: "Clinic", price: "$99", period: "/mo", desc: "For clinics & individual doctors.", features: ["Everything in Patient", "Patient & doctor management", "Appointment booking", "Unlimited uploads", "Priority support"], cta: "Start free trial", highlight: true },
+  { name: "Hospital", price: "Custom", period: "", desc: "For hospitals & networks.", features: ["Multi-department & branches", "SSO + RBAC + audit logs", "Dedicated success manager", "SLA & onboarding"], cta: "Contact sales", highlight: false },
 ];
 
 export default function LandingPage() {
@@ -58,7 +58,7 @@ export default function LandingPage() {
           <Logo />
           <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
             <a href="#features" className="transition-colors hover:text-foreground">Features</a>
-            <a href="#channels" className="transition-colors hover:text-foreground">Channels</a>
+            <a href="#capabilities" className="transition-colors hover:text-foreground">Capabilities</a>
             <a href="#pricing" className="transition-colors hover:text-foreground">Pricing</a>
           </nav>
           <div className="flex items-center gap-2">
@@ -75,7 +75,6 @@ export default function LandingPage() {
 
       {/* Hero */}
       <section className="relative overflow-hidden">
-        {/* Background video (behind the heading) — clear, full opacity */}
         <video
           autoPlay
           loop
@@ -83,34 +82,34 @@ export default function LandingPage() {
           playsInline
           className="pointer-events-none absolute inset-0 h-full w-full object-cover"
         >
-          <source src="/hero.mp4" type="video/mp4" />
+          <source src="/hero_section_video.mp4" type="video/mp4" />
         </video>
-        {/* Light overlay just for heading readability */}
-        <div className="pointer-events-none absolute inset-0 bg-background/45" />
+        {/* no tint over the video — keep its true colors; only a thin bottom fade to blend into the page */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-background" />
         <div className="relative mx-auto max-w-4xl px-4 pb-20 pt-24 text-center">
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <Badge variant="ai" className="mb-6 gap-1.5 px-3 py-1">
-              <Sparkles className="h-3.5 w-3.5" />
-              Powered by Claude + RAG
+              <HeartPulse className="h-3.5 w-3.5" />
+              Healthcare AI Copilot · Powered by Claude
             </Badge>
           </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.05 }}
-            className="text-balance text-4xl font-semibold tracking-tight sm:text-6xl"
+            className="text-balance text-4xl font-semibold tracking-tight text-white drop-shadow-[0_2px_14px_rgba(0,0,0,0.9)] sm:text-6xl"
           >
-            The AI workforce for{" "}
-            <span className="text-gradient">customer support & sales</span>
+            Understand your health,{" "}
+            <span className="text-gradient">in plain language</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.12 }}
-            className="mx-auto mt-6 max-w-2xl text-pretty text-lg text-muted-foreground"
+            className="mx-auto mt-6 max-w-2xl text-pretty text-lg text-white drop-shadow-[0_1px_10px_rgba(0,0,0,0.95)]"
           >
-            One AI brain across chat, WhatsApp, email and voice — grounded in your
-            knowledge, escalates to humans when it matters.
+            Upload a prescription or lab report and get a clear, simple explanation of every
+            medicine and result — plus an AI assistant for your health questions.
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -125,12 +124,19 @@ export default function LandingPage() {
             </Button>
             <Button variant="secondary" size="xl" asChild>
               <Link href="/dashboard">
-                <MessageSquare className="h-4 w-4" /> View live demo
+                <Stethoscope className="h-4 w-4" /> View live demo
               </Link>
             </Button>
           </motion.div>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="mx-auto mt-4 flex items-center justify-center gap-1.5 text-xs text-white/75 drop-shadow-[0_1px_8px_rgba(0,0,0,0.55)]"
+          >
+            <ShieldCheck className="h-3.5 w-3.5" /> AI-powered health information — not a diagnosis. Always consult a qualified doctor.
+          </motion.p>
 
-          {/* Live product demo — real AI, no login */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -154,14 +160,14 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Channels */}
-      <section id="channels" className="mx-auto max-w-5xl px-4 py-20 text-center">
-        <h2 className="text-3xl font-semibold tracking-tight">Every channel. One brain.</h2>
+      {/* Capabilities */}
+      <section id="capabilities" className="mx-auto max-w-5xl px-4 py-20 text-center">
+        <h2 className="text-3xl font-semibold tracking-tight">One copilot for your whole health journey</h2>
         <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
-          Your customers reach you anywhere — OmniAssist answers everywhere, with the same knowledge and tone.
+          From the pharmacy counter to your lab results — clear, grounded answers, instantly.
         </p>
         <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4">
-          {channels.map((c, i) => (
+          {capabilities.map((c, i) => (
             <motion.div
               key={c.label}
               initial={{ opacity: 0, y: 16 }}
@@ -177,29 +183,49 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Features bento */}
+      {/* Features — sticky-stacking deck (scroll to stack the cards) */}
       <section id="features" className="mx-auto max-w-5xl px-4 py-20">
         <div className="text-center">
-          <h2 className="text-3xl font-semibold tracking-tight">Everything you need to scale</h2>
-          <p className="mx-auto mt-3 max-w-xl text-muted-foreground">From first message to closed ticket and won deal.</p>
+          <h2 className="text-3xl font-semibold tracking-tight">Everything to understand your care</h2>
+          <p className="mx-auto mt-3 max-w-xl text-muted-foreground">From prescription to report to question — explained simply.</p>
         </div>
-        <div className="mt-12 grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div className="mt-14 space-y-8 pb-[18vh]">
           {features.map((f, i) => (
-            <motion.div
+            <StackCard
               key={f.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-              className={`group relative overflow-hidden rounded-2xl border border-border bg-card p-7 transition-colors hover:border-primary/30 ${f.span}`}
+              index={i}
+              total={features.length}
+              className="relative mx-auto flex min-h-[74vh] max-w-5xl flex-col justify-between gap-8 overflow-hidden rounded-[44px] border-2 border-border-strong/70 bg-card p-9 shadow-[0_30px_80px_-30px_hsl(222_47%_2%/0.7)] sm:p-12 lg:flex-row lg:items-center lg:gap-10"
             >
-              <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-brand opacity-0 blur-3xl transition-opacity group-hover:opacity-10" />
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-brand/10 text-primary ring-1 ring-primary/20">
-                <f.icon className="h-5 w-5" />
-              </span>
-              <h3 className="mt-4 text-lg font-semibold">{f.title}</h3>
-              <p className="mt-1.5 text-sm text-muted-foreground">{f.desc}</p>
-            </motion.div>
+              {/* subtle brand wash so stacked cards read with depth */}
+              <div aria-hidden className="pointer-events-none absolute -left-16 -top-16 h-64 w-64 rounded-full bg-gradient-brand opacity-[0.07] blur-3xl" />
+              {/* left — copy */}
+              <FadeIn className="relative lg:max-w-md">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-gradient-brand/10 px-3 py-1 text-xs font-medium text-primary">
+                  <f.icon className="h-3.5 w-3.5" /> {f.tag}
+                </span>
+                <h3 className="mt-6 text-3xl font-semibold tracking-tight sm:text-4xl">{f.title}</h3>
+                <p className="mt-4 text-lg text-muted-foreground">{f.desc}</p>
+                <div className="mt-7">
+                  <Button variant="secondary" size="lg" asChild>
+                    <Link href="/signup">
+                      Try it free <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
+              </FadeIn>
+              {/* right — illustration */}
+              <FadeIn delay={0.12} className="relative flex flex-1 items-center justify-center">
+                <div aria-hidden className="absolute inset-0 m-auto h-3/4 w-3/4 rounded-full bg-gradient-brand opacity-[0.06] blur-3xl" />
+                <img
+                  src={f.illo}
+                  alt=""
+                  aria-hidden
+                  draggable={false}
+                  className="relative max-h-[40vh] w-auto select-none object-contain drop-shadow-[0_18px_40px_rgba(79,70,229,0.18)]"
+                />
+              </FadeIn>
+            </StackCard>
           ))}
         </div>
       </section>
@@ -208,16 +234,14 @@ export default function LandingPage() {
       <section id="pricing" className="mx-auto max-w-5xl px-4 py-20">
         <div className="text-center">
           <h2 className="text-3xl font-semibold tracking-tight">Simple, scalable pricing</h2>
-          <p className="mx-auto mt-3 max-w-xl text-muted-foreground">Start free. Upgrade when you grow.</p>
+          <p className="mx-auto mt-3 max-w-xl text-muted-foreground">Free for patients. Plans for clinics and hospitals.</p>
         </div>
         <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
           {plans.map((plan) => (
             <div
               key={plan.name}
               className={`relative rounded-2xl border p-7 ${
-                plan.highlight
-                  ? "border-primary/40 bg-card shadow-glow-brand"
-                  : "border-border bg-card"
+                plan.highlight ? "border-primary/40 bg-card shadow-glow-brand" : "border-border bg-card"
               }`}
             >
               {plan.highlight && (
@@ -239,11 +263,7 @@ export default function LandingPage() {
                   </li>
                 ))}
               </ul>
-              <Button
-                variant={plan.highlight ? "gradient" : "secondary"}
-                className="mt-7 w-full"
-                asChild
-              >
+              <Button variant={plan.highlight ? "gradient" : "secondary"} className="mt-7 w-full" asChild>
                 <Link href="/signup">{plan.cta}</Link>
               </Button>
             </div>
@@ -255,9 +275,9 @@ export default function LandingPage() {
       <section className="mx-auto max-w-5xl px-4 pb-24">
         <div className="relative overflow-hidden rounded-3xl border border-border-strong bg-gradient-brand p-12 text-center">
           <div className="pointer-events-none absolute inset-0 bg-gradient-mesh opacity-30" />
-          <h2 className="relative text-3xl font-semibold text-white">Ready to deploy your AI workforce?</h2>
+          <h2 className="relative text-3xl font-semibold text-white">Ready to make healthcare simple?</h2>
           <p className="relative mx-auto mt-3 max-w-lg text-white/80">
-            Set up in minutes. No credit card required.
+            Understand your prescriptions and reports in seconds. No credit card required.
           </p>
           <Button variant="secondary" size="xl" className="relative mt-6 border-0" asChild>
             <Link href="/signup">
@@ -271,15 +291,16 @@ export default function LandingPage() {
       <footer className="border-t border-border">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-8 sm:flex-row">
           <Logo />
-          <p className="text-sm text-muted-foreground">© 2026 OmniAssist AI. All rights reserved.</p>
+          <p className="text-center text-xs text-muted-foreground sm:text-sm">
+            © 2026 OmniAssist Health · Not a substitute for professional medical advice.
+          </p>
           <div className="flex gap-6 text-sm text-muted-foreground">
             <Link href="/legal/privacy" className="hover:text-foreground">Privacy</Link>
             <Link href="/legal/terms" className="hover:text-foreground">Terms</Link>
-            <a href="mailto:sales@omniassist.ai" className="hover:text-foreground">Contact</a>
+            <a href="mailto:hello@omniassist.health" className="hover:text-foreground">Contact</a>
           </div>
         </div>
       </footer>
     </div>
   );
 }
-

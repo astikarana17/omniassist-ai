@@ -175,11 +175,11 @@ export const revenueTrend = Array.from({ length: 12 }).map((_, i) => ({
 }));
 
 export const conversionFunnel = [
-  { stage: "Visitors", value: 24800, fill: "#6366F1" },
+  { stage: "Visitors", value: 24800, fill: "#3B82F6" },
   { stage: "Engaged", value: 9200, fill: "#7C7CF0" },
-  { stage: "Qualified", value: 3100, fill: "#8B5CF6" },
-  { stage: "Demo", value: 940, fill: "#A78BFA" },
-  { stage: "Won", value: 312, fill: "#22D3EE" },
+  { stage: "Qualified", value: 3100, fill: "#38BDF8" },
+  { stage: "Demo", value: 940, fill: "#60A5FA" },
+  { stage: "Won", value: 312, fill: "#0EA5E9" },
 ];
 
 export const sentimentByDay = Array.from({ length: 7 }).map((_, i) => ({
@@ -199,8 +199,8 @@ export const resolutionHistogram = [
 ];
 
 export const aiVsHuman = [
-  { name: "AI Resolved", value: 68, fill: "#6366F1" },
-  { name: "Human Resolved", value: 32, fill: "#22D3EE" },
+  { name: "AI Resolved", value: 68, fill: "#3B82F6" },
+  { name: "Human Resolved", value: 32, fill: "#0EA5E9" },
 ];
 
 export const teamPerformance = users

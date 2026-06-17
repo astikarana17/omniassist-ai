@@ -6,6 +6,7 @@ import { Loader2, AlertCircle } from "lucide-react";
 import { Logo } from "@/components/shared/logo";
 import { Button } from "@/components/ui/button";
 import { useOAuthCallback } from "@/lib/api-hooks";
+import { OAUTH_STATE_KEY } from "@/components/auth/oauth-buttons";
 
 function CallbackInner() {
   const params = useSearchParams();
@@ -19,13 +20,26 @@ function CallbackInner() {
     ran.current = true;
 
     const code = params.get("code");
-    const provider = params.get("state");
     if (params.get("error")) {
       setError("Sign-in was cancelled.");
       return;
     }
+    // state = "<provider>:<nonce>" — verify the nonce against the one we stored
+    // before redirecting, to defeat OAuth login-CSRF.
+    const [provider, nonce] = (params.get("state") ?? "").split(":");
+    let expected: string | null = null;
+    try {
+      expected = sessionStorage.getItem(OAUTH_STATE_KEY);
+      sessionStorage.removeItem(OAUTH_STATE_KEY);
+    } catch {
+      /* ignore */
+    }
     if (!code || (provider !== "google" && provider !== "github")) {
       setError("Invalid sign-in callback.");
+      return;
+    }
+    if (!nonce || !expected || nonce !== expected) {
+      setError("Sign-in could not be verified. Please try again.");
       return;
     }
     oauth.mutate(

@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Search, SlidersHorizontal } from "lucide-react";
+import { Search } from "lucide-react";
 import type { Conversation, Channel } from "@/types";
 import { ChannelIcon } from "@/components/shared/channel-icon";
 import { UserAvatar } from "@/components/shared/user-avatar";
+import { ConversationStatusPill } from "@/components/shared/status-pill";
 import { Input } from "@/components/ui/input";
 import { relativeTime, cn } from "@/lib/utils";
 
@@ -42,9 +43,6 @@ export function ConversationList({
       <div className="space-y-3 border-b border-border p-3">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold">Inbox</h2>
-          <button className="text-muted-foreground hover:text-foreground">
-            <SlidersHorizontal className="h-4 w-4" />
-          </button>
         </div>
         <div className="relative">
           <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -80,7 +78,8 @@ export function ConversationList({
             onClick={() => onSelect(c.id)}
             className={cn(
               "flex w-full gap-3 border-b border-border/60 px-3 py-3 text-left transition-colors hover:bg-accent/40",
-              activeId === c.id && "bg-accent/60"
+              activeId === c.id && "bg-accent/60",
+              (c.status === "resolved" || c.status === "closed") && "opacity-60"
             )}
           >
             <div className="relative">
@@ -97,7 +96,10 @@ export function ConversationList({
                 </span>
               </div>
               <p className="truncate text-xs font-medium text-muted-foreground">{c.subject}</p>
-              <p className="truncate text-xs text-muted-foreground/70">{c.preview}</p>
+              <div className="mt-1 flex items-center gap-2">
+                <ConversationStatusPill status={c.status} />
+                <p className="truncate text-xs text-muted-foreground/70">{c.preview}</p>
+              </div>
             </div>
             {c.unread > 0 && (
               <span className="mt-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-primary-foreground">

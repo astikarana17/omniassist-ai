@@ -42,25 +42,30 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title=settings.APP_NAME,
         version="1.0.0",
-        description="Enterprise AI Customer Support & Sales backend.",
-        docs_url="/docs",
-        redoc_url="/redoc",
-        openapi_url="/openapi.json",
+        description="OmniAssist Health — prescription, lab-report & health-assistant backend.",
+        # Disable interactive docs + schema in production (avoid recon surface).
+        docs_url=None if settings.is_production else "/docs",
+        redoc_url=None if settings.is_production else "/redoc",
+        openapi_url=None if settings.is_production else "/openapi.json",
         lifespan=lifespan,
     )
 
-    # Middleware (order matters: context → security → rate limit → CORS).
+    # Starlette runs middleware in REVERSE registration order, so the LAST one
+    # registered is the OUTERMOST. Register CORS last so it wraps everything —
+    # otherwise short-circuit responses (e.g. a 429 from the rate limiter) skip
+    # CORS and the browser sees an opaque CORS error instead of the real status.
+    # Effective outer→inner: CORS → rate limit → security → context.
+    app.add_middleware(RequestContextMiddleware)
+    app.add_middleware(SecurityHeadersMiddleware)
+    app.add_middleware(RateLimitMiddleware)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.BACKEND_CORS_ORIGINS,
         allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
+        allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allow_headers=["Authorization", "Content-Type", "X-Request-ID"],
         expose_headers=["X-Request-ID"],
     )
-    app.add_middleware(RateLimitMiddleware)
-    app.add_middleware(SecurityHeadersMiddleware)
-    app.add_middleware(RequestContextMiddleware)
 
     register_exception_handlers(app)
     app.include_router(api_router, prefix=settings.API_V1_PREFIX)

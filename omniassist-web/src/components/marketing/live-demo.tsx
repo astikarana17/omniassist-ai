@@ -2,29 +2,27 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Loader2, Send, Sparkles, FileText } from "lucide-react";
+import { Loader2, Send, Sparkles } from "lucide-react";
 
 /**
- * Live, no-login demo chat on the landing page — talks to the real public
- * widget endpoint, so visitors experience the actual product before signing up.
+ * Live, no-login demo chat on the landing page — talks to the REAL Health
+ * Assistant brain via the public /health-demo/chat endpoint, so visitors get
+ * genuine medical answers (not a canned reply) before signing up.
  */
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
-const DEMO_ORG = process.env.NEXT_PUBLIC_DEMO_ORG_SLUG ?? "omniassist";
 
 interface DemoMsg {
   id: string;
   who: "customer" | "ai";
   text: string;
-  confidence?: number | null;
-  sources?: { title?: string }[];
 }
 
 const SUGGESTIONS = [
-  "What does OmniAssist do?",
-  "How much does it cost?",
-  "Is my data secure?",
-  "How do I set up WhatsApp?",
+  "What can this Health Copilot do?",
+  "How does prescription analysis work?",
+  "Can it read lab reports?",
+  "Is my health data private?",
 ];
 
 let nextId = 0;
@@ -35,12 +33,11 @@ export function LiveDemo() {
     {
       id: mid(),
       who: "ai",
-      text: "Hi! I'm OmniAssist's AI agent — this demo is live, not scripted. Ask me anything about the product. 👋",
+      text: "Hi! I'm your Healthcare AI Copilot. Ask me about the product or how it helps you understand your care. 👋",
     },
   ]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
-  const [conversationId, setConversationId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -51,34 +48,28 @@ export function LiveDemo() {
     const q = text.trim();
     if (!q || busy) return;
     setInput("");
-    setMessages((m) => [...m, { id: mid(), who: "customer", text: q }]);
+    const history = [...messages, { id: mid(), who: "customer" as const, text: q }];
+    setMessages(history);
     setBusy(true);
     try {
-      const res = await fetch(
-        `${API_URL}/api/v1/public/widget/${DEMO_ORG}/message`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            content: q,
-            contact_name: "Website Visitor",
-            conversation_id: conversationId,
-          }),
-        }
-      );
+      // send the running transcript to the real Health Assistant brain
+      const payloadMessages = history.map((m) => ({
+        role: m.who === "ai" ? "assistant" : "user",
+        content: m.text,
+      }));
+      const res = await fetch(`${API_URL}/api/v1/public/health-demo/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: payloadMessages }),
+      });
       const json = await res.json();
-      const d = json?.data;
-      if (d?.conversation_id) setConversationId(d.conversation_id);
+      const reply = json?.data?.reply ?? json?.reply;
       setMessages((m) => [
         ...m,
         {
           id: mid(),
           who: "ai",
-          text:
-            d?.reply ??
-            "I've passed this to a human teammate — they'll follow up shortly!",
-          confidence: d?.confidence,
-          sources: d?.sources ?? [],
+          text: reply ?? "Sorry, I couldn't generate a response. Please try rephrasing.",
         },
       ]);
     } catch {
@@ -104,7 +95,7 @@ export function LiveDemo() {
           <span className="h-3 w-3 rounded-full bg-warning/60" />
           <span className="h-3 w-3 rounded-full bg-success/60" />
           <span className="ml-3 text-xs text-muted-foreground">
-            yourcompany.com — OmniAssist widget
+            Healthcare AI Copilot
           </span>
           <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-ai/10 px-2 py-0.5 text-[10px] font-semibold text-ai">
             <span className="relative flex h-1.5 w-1.5">
@@ -133,21 +124,10 @@ export function LiveDemo() {
               >
                 {m.who === "ai" && (
                   <span className="mb-1 flex items-center gap-1 text-xs font-medium text-ai">
-                    <Sparkles className="h-3 w-3" /> OmniAssist AI
+                    <Sparkles className="h-3 w-3" /> Health Copilot
                   </span>
                 )}
                 <p className="whitespace-pre-wrap">{m.text}</p>
-                {m.who === "ai" && (m.confidence != null || (m.sources?.length ?? 0) > 0) && (
-                  <p className="mt-1.5 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
-                    {m.sources?.[0]?.title && (
-                      <span className="inline-flex items-center gap-1">
-                        <FileText className="h-3 w-3" />
-                        {m.sources[0].title}
-                      </span>
-                    )}
-                    {m.confidence != null && <span>{Math.round(m.confidence)}% confidence</span>}
-                  </p>
-                )}
               </div>
             </motion.div>
           ))}
@@ -181,7 +161,7 @@ export function LiveDemo() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && ask(input)}
-              placeholder="Ask the AI anything about OmniAssist…"
+              placeholder="Ask the Health Copilot anything…"
               className="flex-1 bg-transparent py-1.5 text-sm outline-none placeholder:text-muted-foreground"
             />
             <button

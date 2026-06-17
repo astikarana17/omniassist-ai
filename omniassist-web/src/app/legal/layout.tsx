@@ -20,7 +20,7 @@ export default function LegalLayout({ children }: { children: React.ReactNode })
         </article>
       </main>
       <footer className="border-t border-border py-8 text-center text-xs text-muted-foreground">
-        © 2026 OmniAssist AI. All rights reserved.
+        © 2026 OmniAssist Health. All rights reserved.
       </footer>
     </div>
   );

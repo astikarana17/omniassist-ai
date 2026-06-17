@@ -14,6 +14,15 @@ from app.models.company import (
     RoadmapItem,
 )
 from app.models.conversation import Contact, Conversation, Message
+from app.models.health import (
+    Appointment,
+    Doctor,
+    MedicalReport,
+    Medicine,
+    MedicineEmbedding,
+    Patient,
+    Prescription,
+)
 from app.models.insights import (
     BusinessImpactMetric,
     ExecutiveInsight,
@@ -120,4 +129,12 @@ __all__ = [
     "InternalDocument",
     "InternalChunk",
     "HrPolicy",
+    # --- Healthcare AI Copilot ---
+    "Patient",
+    "Doctor",
+    "Appointment",
+    "Prescription",
+    "MedicalReport",
+    "Medicine",
+    "MedicineEmbedding",
 ]

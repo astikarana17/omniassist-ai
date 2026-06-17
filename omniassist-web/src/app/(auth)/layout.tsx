@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Sparkles, ShieldCheck, Globe } from "lucide-react";
+import { Pill, FlaskConical, MessageCircleHeart } from "lucide-react";
 import { Logo } from "@/components/shared/logo";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
@@ -17,18 +17,18 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 
         <div className="relative space-y-6">
           <h2 className="max-w-md text-3xl font-semibold leading-tight tracking-tight">
-            Your customers always heard.{" "}
-            <span className="text-gradient">Your team always ahead.</span>
+            Understand your health,{" "}
+            <span className="text-gradient">in plain language.</span>
           </h2>
           <p className="max-w-md text-muted-foreground">
-            Deploy AI support and sales agents across every channel — grounded in
-            your knowledge, escalating to humans when it matters.
+            Upload a prescription or lab report and get a clear, simple explanation
+            of every medicine and result — plus an AI assistant for your questions.
           </p>
           <div className="flex flex-col gap-3 pt-2">
             {[
-              { icon: Sparkles, text: "RAG-grounded answers with sources & confidence" },
-              { icon: Globe, text: "Website, WhatsApp, Email & Voice in one inbox" },
-              { icon: ShieldCheck, text: "Enterprise RBAC, audit logs & data isolation" },
+              { icon: Pill, text: "Every medicine explained — uses, timing & side effects" },
+              { icon: FlaskConical, text: "Lab values read, flagged & explained in plain words" },
+              { icon: MessageCircleHeart, text: "An AI health assistant — answers, never a diagnosis" },
             ].map((f) => (
               <div key={f.text} className="flex items-center gap-3 text-sm">
                 <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-card ring-1 ring-border">
@@ -42,10 +42,10 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 
         <div className="relative rounded-xl border border-border bg-card/60 p-4 backdrop-blur">
           <p className="text-sm italic text-muted-foreground">
-            &ldquo;OmniAssist deflected 70% of our tickets in the first month — our
-            team finally focuses on the conversations that matter.&rdquo;
+            &ldquo;I finally understood my blood test and what each medicine was for —
+            without waiting for an appointment.&rdquo;
           </p>
-          <p className="mt-2 text-sm font-medium">— Head of CX, Acme Inc</p>
+          <p className="mt-2 text-sm font-medium">— A patient using OmniAssist Health</p>
         </div>
       </div>
 

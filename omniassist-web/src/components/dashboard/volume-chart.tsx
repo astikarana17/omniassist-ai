@@ -14,10 +14,10 @@ import { channelTimeseries } from "@/lib/data";
 import { ChartTooltip } from "@/components/dashboard/chart-tooltip";
 
 const series = [
-  { key: "web", color: "#6366F1", label: "Website" },
+  { key: "web", color: "#3B82F6", label: "Website" },
   { key: "whatsapp", color: "#22C55E", label: "WhatsApp" },
-  { key: "email", color: "#8B5CF6", label: "Email" },
-  { key: "voice", color: "#22D3EE", label: "Voice" },
+  { key: "email", color: "#38BDF8", label: "Email" },
+  { key: "voice", color: "#0EA5E9", label: "Voice" },
 ];
 
 export function VolumeChart() {

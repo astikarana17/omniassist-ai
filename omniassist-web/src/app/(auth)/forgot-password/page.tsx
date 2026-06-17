@@ -3,22 +3,30 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, MailCheck } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useForgotPassword, apiConfigured } from "@/lib/api-hooks";
 
 export default function ForgotPasswordPage() {
   const [sent, setSent] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
+  const forgot = useForgotPassword();
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    if (!apiConfigured()) {
       setSent(true);
-    }, 900);
+      return;
+    }
+    try {
+      // Backend is non-enumerating, so always show success once it resolves.
+      await forgot.mutateAsync({ email });
+      setSent(true);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Couldn't send the reset link.");
+    }
   };
 
   if (sent) {
@@ -62,13 +70,13 @@ export default function ForgotPasswordPage() {
           <Input
             id="email"
             type="email"
-            placeholder="priya@acme.com"
+            placeholder="you@clinic.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
-        <Button type="submit" variant="gradient" className="w-full" loading={loading}>
+        <Button type="submit" variant="gradient" className="w-full" loading={forgot.isPending}>
           Send reset link <ArrowRight className="h-4 w-4" />
         </Button>
       </form>

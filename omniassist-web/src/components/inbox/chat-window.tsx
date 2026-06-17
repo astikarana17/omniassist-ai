@@ -16,6 +16,7 @@ import { ChannelIcon, channelLabel } from "@/components/shared/channel-icon";
 import { ConversationStatusPill } from "@/components/shared/status-pill";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 import {
   useAgentReply,
   useConversationStatus,
@@ -141,8 +142,14 @@ export function ChatWindow({
             variant="secondary"
             size="sm"
             className="hidden sm:inline-flex"
-            disabled={!live || handoff.isPending}
-            onClick={() => live && handoff.mutate()}
+            disabled={!live || handoff.isPending || conversation.status === "pending"}
+            onClick={() =>
+              live &&
+              handoff.mutate(undefined, {
+                onSuccess: () => toast.success("Handed off to a human"),
+                onError: () => toast.error("Could not hand off"),
+              })
+            }
           >
             <ArrowRightLeft className="h-4 w-4" /> {handoff.isPending ? "…" : "Handoff"}
           </Button>
@@ -150,10 +157,17 @@ export function ChatWindow({
             variant="ghost"
             size="sm"
             className="hidden text-success sm:inline-flex"
-            disabled={!live || status.isPending}
-            onClick={() => live && status.mutate("resolved")}
+            disabled={!live || status.isPending || conversation.status === "resolved"}
+            onClick={() =>
+              live &&
+              status.mutate("resolved", {
+                onSuccess: () => toast.success("Conversation resolved ✓"),
+                onError: () => toast.error("Could not resolve"),
+              })
+            }
           >
-            <CheckCircle2 className="h-4 w-4" /> Resolve
+            <CheckCircle2 className="h-4 w-4" />{" "}
+            {conversation.status === "resolved" ? "Resolved" : "Resolve"}
           </Button>
         </div>
       </div>

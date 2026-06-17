@@ -10,13 +10,42 @@ from fastapi import APIRouter
 from sqlalchemy import select
 
 from app.core.database import get_db
-from app.core.exceptions import NotFoundError
+from app.core.deps import DbSession
+from app.core.exceptions import ExternalServiceError, NotFoundError
+from app.core.logging import get_logger
 from app.models.enums import Channel
 from app.models.organization import Organization
 from app.schemas.domain import WidgetMessageRequest
+from app.schemas.health import HealthChatRequest
+from app.services import health_assistant_service
 from app.services.conversation_service import ConversationService
 
+logger = get_logger("public")
+
 router = APIRouter(prefix="/public", tags=["Public Widget"])
+
+
+@router.post("/health-demo/chat")
+async def health_demo_chat(payload: HealthChatRequest, db: DbSession) -> dict:
+    """Public, unauthenticated health Q&A for the landing-page demo.
+
+    Reuses the REAL safety-railed, RAG-grounded Health Assistant brain (same model
+    the signed-in /health-assistant page uses), so visitors get genuine, correct
+    answers — not a canned human-handoff. Stateless: the client sends the running
+    transcript. Degrades to a friendly message on provider error so the demo never
+    hard-fails.
+    """
+    try:
+        reply = await health_assistant_service.answer(
+            [m.model_dump() for m in payload.messages], db=db
+        )
+    except ExternalServiceError as exc:
+        logger.warning("health_demo_unavailable", error=str(exc))
+        reply = (
+            "I'm just waking up — please try again in a moment. You can also sign up "
+            "to use the full Health Assistant."
+        )
+    return {"data": {"reply": reply}, "error": None}
 
 
 @router.post("/widget/{org_slug}/message")

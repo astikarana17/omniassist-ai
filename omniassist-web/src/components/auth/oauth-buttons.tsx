@@ -5,13 +5,29 @@ import { Button } from "@/components/ui/button";
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
 const GITHUB_CLIENT_ID = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID ?? "";
 
+export const OAUTH_STATE_KEY = "oauth_state";
+
+/** Random per-request nonce, stored so the callback can verify it (anti-CSRF). */
+function makeState(provider: "google" | "github") {
+  const nonce =
+    typeof crypto !== "undefined" && crypto.randomUUID
+      ? crypto.randomUUID()
+      : Math.random().toString(36).slice(2) + Date.now().toString(36);
+  try {
+    sessionStorage.setItem(OAUTH_STATE_KEY, nonce);
+  } catch {
+    /* sessionStorage unavailable — proceed; callback will reject if it can't verify */
+  }
+  return `${provider}:${nonce}`;
+}
+
 function startGoogle() {
   const params = new URLSearchParams({
     client_id: GOOGLE_CLIENT_ID,
     redirect_uri: `${window.location.origin}/auth/callback`,
     response_type: "code",
     scope: "openid email profile",
-    state: "google",
+    state: makeState("google"),
     prompt: "select_account",
   });
   window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params}`;
@@ -22,7 +38,7 @@ function startGithub() {
     client_id: GITHUB_CLIENT_ID,
     redirect_uri: `${window.location.origin}/auth/callback`,
     scope: "read:user user:email",
-    state: "github",
+    state: makeState("github"),
   });
   window.location.href = `https://github.com/login/oauth/authorize?${params}`;
 }

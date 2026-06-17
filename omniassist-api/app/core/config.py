@@ -4,7 +4,7 @@ from __future__ import annotations
 from functools import lru_cache
 from typing import Literal
 
-from pydantic import Field, field_validator
+from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -64,6 +64,15 @@ class Settings(BaseSettings):
     OPENROUTER_API_KEY: str = ""
     OPENROUTER_MODEL: str = "meta-llama/llama-3.3-70b-instruct:free"
     OPENROUTER_BASE_URL: str = "https://openrouter.ai/api/v1"
+    # Vision model for medical OCR (prescriptions/reports). Must be multimodal —
+    # bump to openai/gpt-4o or google/gemini-2.5-flash for tougher handwriting.
+    OPENROUTER_VISION_MODEL: str = "openai/gpt-4o-mini"
+
+    # --- Gemini (Healthcare AI: multimodal OCR + medical reasoning + embeddings) ---
+    GEMINI_API_KEY: str = ""
+    GEMINI_MODEL: str = "gemini-2.5-flash"
+    GEMINI_EMBED_MODEL: str = "gemini-embedding-001"
+    GEMINI_EMBED_DIM: int = 768
 
     # --- Pinecone ---
     PINECONE_API_KEY: str = ""
@@ -108,6 +117,24 @@ class Settings(BaseSettings):
         if isinstance(v, str) and not v.startswith("["):
             return [origin.strip() for origin in v.split(",") if origin.strip()]
         return v
+
+    @model_validator(mode="after")
+    def _require_prod_secrets(self) -> "Settings":
+        """Fail fast at boot if required secrets are missing in production."""
+        if self.ENVIRONMENT == "production":
+            missing = [
+                name
+                for name, val in (
+                    ("ENCRYPTION_KEY", self.ENCRYPTION_KEY),
+                    ("SECRET_KEY", self.SECRET_KEY),
+                )
+                if not val
+            ]
+            if missing:
+                raise ValueError(
+                    f"Missing required production secret(s): {', '.join(missing)}."
+                )
+        return self
 
     @property
     def is_production(self) -> bool:

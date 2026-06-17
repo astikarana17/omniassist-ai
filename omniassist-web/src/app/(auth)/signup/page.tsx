@@ -37,7 +37,7 @@ export default function SignupPage() {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!apiConfigured()) {
-      toast.success("Workspace created! Welcome to OmniAssist.");
+      toast.success("Workspace created! Welcome to OmniAssist Health.");
       router.push("/dashboard");
       return;
     }
@@ -48,7 +48,7 @@ export default function SignupPage() {
         password,
         workspace_name: workspace,
       });
-      toast.success("Workspace created! Welcome to OmniAssist.");
+      toast.success("Workspace created! Welcome to OmniAssist Health.");
       router.push("/dashboard");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Sign up failed.");
@@ -69,11 +69,11 @@ export default function SignupPage() {
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-2">
             <Label htmlFor="name">Full name</Label>
-            <Input id="name" placeholder="Priya Rao" value={name} onChange={(e) => setName(e.target.value)} required />
+            <Input id="name" placeholder="Dr. Anita Rao" value={name} onChange={(e) => setName(e.target.value)} required />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">Work email</Label>
-            <Input id="email" type="email" placeholder="priya@acme.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <Label htmlFor="email">Email</Label>
+            <Input id="email" type="email" placeholder="you@clinic.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
           </div>
         </div>
 
@@ -81,7 +81,7 @@ export default function SignupPage() {
           <Label htmlFor="workspace">Workspace name</Label>
           <Input
             id="workspace"
-            placeholder="Acme Inc"
+            placeholder="City Health Clinic"
             value={workspace}
             onChange={(e) => setWorkspace(e.target.value)}
             required

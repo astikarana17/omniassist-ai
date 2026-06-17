@@ -27,6 +27,7 @@ const convStatusMap: Record<
   pending: { label: "Pending", variant: "warning" },
   resolved: { label: "Resolved", variant: "success" },
   snoozed: { label: "Snoozed", variant: "secondary" },
+  closed: { label: "Closed", variant: "secondary" },
 };
 
 const priorityMap: Record<Priority, { label: string; className: string; dot: string }> = {

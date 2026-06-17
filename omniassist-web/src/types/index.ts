@@ -2,7 +2,7 @@
 
 export type Channel = "web" | "whatsapp" | "email" | "voice";
 
-export type ConversationStatus = "open" | "pending" | "resolved" | "snoozed";
+export type ConversationStatus = "open" | "pending" | "resolved" | "snoozed" | "closed";
 
 export type TicketStatus = "open" | "in_progress" | "pending" | "resolved" | "closed";
 

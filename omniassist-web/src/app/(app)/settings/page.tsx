@@ -15,7 +15,6 @@ import {
   Mail,
   Phone,
   Plus,
-  Check,
   ExternalLink,
 } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
@@ -25,7 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
+import { useAuthStore } from "@/store/auth-store";
 import { cn } from "@/lib/utils";
 
 const sections = [
@@ -35,7 +34,6 @@ const sections = [
   { key: "notifications", label: "Notifications", icon: Bell },
   { key: "api", label: "API Keys", icon: KeyRound },
   { key: "billing", label: "Billing & Plan", icon: CreditCard },
-  { key: "security", label: "Security", icon: ShieldCheck },
 ] as const;
 
 type SectionKey = (typeof sections)[number]["key"];
@@ -45,10 +43,9 @@ export default function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-[1200px] space-y-6 p-4 sm:p-6">
-      <PageHeader title="Settings" description="Configure your workspace, channels and security." />
+      <PageHeader title="Settings" description="Configure your workspace, channels and AI." />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[220px_1fr]">
-        {/* Section nav */}
         <nav className="flex gap-1 overflow-x-auto no-scrollbar lg:flex-col">
           {sections.map((s) => (
             <button
@@ -56,7 +53,9 @@ export default function SettingsPage() {
               onClick={() => setActive(s.key)}
               className={cn(
                 "flex shrink-0 items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                active === s.key ? "bg-primary/10 text-foreground ring-1 ring-primary/20" : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                active === s.key
+                  ? "bg-primary/10 text-foreground ring-1 ring-primary/20"
+                  : "text-muted-foreground hover:bg-accent hover:text-foreground"
               )}
             >
               <s.icon className={cn("h-4 w-4", active === s.key && "text-primary")} />
@@ -72,7 +71,6 @@ export default function SettingsPage() {
           </Link>
         </nav>
 
-        {/* Content */}
         <div className="space-y-4">
           {active === "general" && <GeneralSection />}
           {active === "channels" && <ChannelsSection />}
@@ -80,7 +78,6 @@ export default function SettingsPage() {
           {active === "notifications" && <NotificationsSection />}
           {active === "api" && <ApiSection />}
           {active === "billing" && <BillingSection />}
-          {active === "security" && <SecuritySection />}
         </div>
       </div>
     </div>
@@ -88,31 +85,30 @@ export default function SettingsPage() {
 }
 
 function GeneralSection() {
+  const { org } = useAuthStore();
   return (
     <Card>
       <CardHeader><CardTitle className="text-base">Workspace</CardTitle></CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <Label>Workspace name</Label>
-          <Input defaultValue="Acme Inc" />
+          <Input defaultValue={org?.name ?? ""} readOnly />
         </div>
         <div className="space-y-2">
           <Label>Workspace URL</Label>
           <div className="flex items-center">
-            <span className="rounded-l-md border border-r-0 border-border-strong bg-secondary px-3 py-2 text-sm text-muted-foreground">omniassist.ai/</span>
-            <Input defaultValue="acme" className="rounded-l-none" />
+            <span className="rounded-l-md border border-r-0 border-border-strong bg-secondary px-3 py-2 text-sm text-muted-foreground">
+              omniassist.ai/
+            </span>
+            <Input defaultValue={org?.slug ?? ""} readOnly className="rounded-l-none" />
           </div>
         </div>
         <div className="space-y-2">
-          <Label>Brand color</Label>
-          <div className="flex gap-2">
-            {["#6366F1", "#8B5CF6", "#22C55E", "#F59E0B", "#EF4444", "#22D3EE"].map((c, i) => (
-              <button key={c} className={cn("h-8 w-8 rounded-full ring-2 ring-offset-2 ring-offset-background", i === 0 ? "ring-foreground" : "ring-transparent")} style={{ background: c }} />
-            ))}
-          </div>
-        </div>
-        <div className="flex justify-end">
-          <Button variant="gradient" onClick={() => toast.success("Workspace saved")}>Save</Button>
+          <Label>Plan</Label>
+          <p className="text-sm capitalize text-muted-foreground">
+            {org?.role === "super_admin" ? "Owner" : org?.role} ·{" "}
+            <Link href="/billing" className="text-primary hover:underline">manage plan →</Link>
+          </p>
         </div>
       </CardContent>
     </Card>
@@ -120,10 +116,10 @@ function GeneralSection() {
 }
 
 const channels = [
-  { key: "web", icon: Globe, label: "Website Chat", status: "connected", detail: "Widget installed" },
-  { key: "whatsapp", icon: MessageCircle, label: "WhatsApp", status: "connected", detail: "+1 415 555 0132" },
-  { key: "email", icon: Mail, label: "Email", status: "setup", detail: "Connect Gmail" },
-  { key: "voice", icon: Phone, label: "Voice", status: "connected", detail: "+1 415 555 0199" },
+  { key: "web", icon: Globe, label: "Website Chat", detail: "Embed the widget on your site — always available." },
+  { key: "whatsapp", icon: MessageCircle, label: "WhatsApp", detail: "Connect via Twilio (Growth & Enterprise plans)." },
+  { key: "email", icon: Mail, label: "Email", detail: "Connect a support inbox (Gmail / SMTP)." },
+  { key: "voice", icon: Phone, label: "Voice", detail: "Phone support via Twilio Voice (Enterprise)." },
 ];
 
 function ChannelsSection() {
@@ -131,6 +127,10 @@ function ChannelsSection() {
     <Card>
       <CardHeader><CardTitle className="text-base">Channels</CardTitle></CardHeader>
       <CardContent className="space-y-3">
+        <p className="text-xs text-muted-foreground">
+          Connect channels by configuring their provider credentials in the backend environment.
+          Need help wiring a channel? Reach out and we&apos;ll get you set up.
+        </p>
         {channels.map((c) => (
           <div key={c.key} className="flex items-center gap-3 rounded-lg border border-border p-4">
             <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary">
@@ -140,17 +140,9 @@ function ChannelsSection() {
               <p className="text-sm font-medium">{c.label}</p>
               <p className="text-xs text-muted-foreground">{c.detail}</p>
             </div>
-            {c.status === "connected" ? (
-              <>
-                <Badge variant="success" className="gap-1"><Check className="h-3 w-3" /> Connected</Badge>
-                <Button size="sm" variant="secondary">Configure</Button>
-              </>
-            ) : (
-              <>
-                <Badge variant="warning">Setup needed</Badge>
-                <Button size="sm" variant="gradient">Connect</Button>
-              </>
-            )}
+            <Button size="sm" variant="secondary" asChild>
+              <a href={`mailto:sales@omniassist.ai?subject=Connect%20${c.label}`}>Set up</a>
+            </Button>
           </div>
         ))}
       </CardContent>
@@ -162,24 +154,21 @@ function AiSection() {
   return (
     <Card>
       <CardHeader><CardTitle className="text-base">AI Configuration</CardTitle></CardHeader>
-      <CardContent className="space-y-1">
-        {[
-          { label: "Auto-respond on website chat", desc: "AI answers instantly before a human is needed.", on: true },
-          { label: "Auto-send email replies", desc: "Send AI drafts without manual approval.", on: false },
-          { label: "Cite knowledge sources", desc: "Always attach sources to factual answers.", on: true },
-          { label: "Multi-language auto-detect", desc: "Reply in the customer's language.", on: true },
-          { label: "Sentiment-based escalation", desc: "Escalate angry customers automatically.", on: true },
-        ].map((o) => (
-          <div key={o.label} className="flex items-center justify-between rounded-md px-2 py-3">
-            <div>
-              <p className="text-sm font-medium">{o.label}</p>
-              <p className="text-xs text-muted-foreground">{o.desc}</p>
-            </div>
-            <Switch defaultChecked={o.on} />
-          </div>
-        ))}
-        <div className="pt-2">
-          <Button variant="ai" asChild><Link href="/agents/support"><Sparkles className="h-4 w-4" /> Open agent config</Link></Button>
+      <CardContent className="space-y-3">
+        <p className="text-sm text-muted-foreground">
+          Configure your AI agents — system prompt, tools, auto-handoff confidence threshold, and
+          a live test sandbox — on the dedicated agent pages.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="ai" asChild>
+            <Link href="/agents/support"><Sparkles className="h-4 w-4" /> Support Agent</Link>
+          </Button>
+          <Button variant="secondary" asChild>
+            <Link href="/agents/sales"><Sparkles className="h-4 w-4" /> Sales Agent</Link>
+          </Button>
+          <Button variant="secondary" asChild>
+            <Link href="/knowledge-base">Knowledge Base</Link>
+          </Button>
         </div>
       </CardContent>
     </Card>
@@ -189,24 +178,19 @@ function AiSection() {
 function NotificationsSection() {
   return (
     <Card>
-      <CardHeader><CardTitle className="text-base">Slack Notifications</CardTitle></CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex items-center gap-3 rounded-lg border border-border p-4">
-          <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary text-xl">💬</span>
-          <div className="flex-1">
-            <p className="text-sm font-medium">Slack workspace</p>
-            <p className="text-xs text-muted-foreground">Connected to acme.slack.com · #support</p>
-          </div>
-          <Badge variant="success" className="gap-1"><Check className="h-3 w-3" /> Connected</Badge>
-        </div>
+      <CardHeader><CardTitle className="text-base">Notification preferences</CardTitle></CardHeader>
+      <CardContent className="space-y-1">
+        <p className="px-2 pb-2 text-xs text-muted-foreground">
+          Choose which events appear in your in-app notifications.
+        </p>
         {[
           { label: "New handoff request", on: true },
           { label: "SLA breach warning", on: true },
-          { label: "Low CSAT (≤ 2★)", on: true },
+          { label: "New ticket created", on: true },
           { label: "New hot lead", on: true },
           { label: "Daily summary digest", on: false },
         ].map((o) => (
-          <div key={o.label} className="flex items-center justify-between rounded-md px-2 py-1.5">
+          <div key={o.label} className="flex items-center justify-between rounded-md px-2 py-2.5">
             <p className="text-sm">{o.label}</p>
             <Switch defaultChecked={o.on} />
           </div>
@@ -243,6 +227,9 @@ function BillingSection() {
   return (
     <Card>
       <CardContent className="flex flex-col items-center justify-center gap-3 py-12 text-center">
+        <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-subtle">
+          <CreditCard className="h-5 w-5 text-muted-foreground" />
+        </span>
         <p className="text-sm font-medium">Billing &amp; subscription</p>
         <p className="max-w-sm text-xs text-muted-foreground">
           Manage your plan, usage, and payment method on the dedicated billing page.
@@ -250,31 +237,6 @@ function BillingSection() {
         <Button variant="gradient" asChild>
           <Link href="/billing">Go to Billing</Link>
         </Button>
-      </CardContent>
-    </Card>
-  );
-}
-
-function SecuritySection() {
-  return (
-    <Card>
-      <CardHeader><CardTitle className="text-base">Security</CardTitle></CardHeader>
-      <CardContent className="space-y-1">
-        {[
-          { label: "Require 2FA for all members", desc: "Enforce two-factor across the workspace.", on: false },
-          { label: "SSO / SAML", desc: "Single sign-on for enterprise.", on: false },
-          { label: "Session timeout", desc: "Auto sign-out after 30 min idle.", on: true },
-          { label: "IP allowlist", desc: "Restrict access to known IPs.", on: false },
-          { label: "PII redaction in logs", desc: "Mask sensitive data before logging.", on: true },
-        ].map((o) => (
-          <div key={o.label} className="flex items-center justify-between rounded-md px-2 py-3">
-            <div>
-              <p className="text-sm font-medium">{o.label}</p>
-              <p className="text-xs text-muted-foreground">{o.desc}</p>
-            </div>
-            <Switch defaultChecked={o.on} />
-          </div>
-        ))}
       </CardContent>
     </Card>
   );
