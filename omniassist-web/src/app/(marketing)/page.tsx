@@ -37,10 +37,10 @@ const features = [
 ];
 
 const stats = [
-  { value: "Free", label: "for patients — no card needed" },
-  { value: "Minutes", label: "to understand a prescription or report" },
-  { value: "3", label: "AI tools: Rx · Reports · Assistant" },
-  { value: "24/7", label: "health answers, anytime" },
+  { value: "3-in-1", label: "prescriptions · reports · AI assistant" },
+  { value: "Plain English", label: "every medicine & result, no jargon" },
+  { value: "24/7", label: "instant answers — no appointment" },
+  { value: "Private", label: "encrypted · never sold · not for training" },
 ];
 
 const plans = [
