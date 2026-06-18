@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Loader2, Send, Sparkles } from "lucide-react";
+import { MarkdownMessage } from "@/components/shared/markdown-message";
 
 /**
  * Live, no-login demo chat on the landing page — talks to the REAL Health
@@ -127,7 +128,11 @@ export function LiveDemo() {
                     <Sparkles className="h-3 w-3" /> Health Copilot
                   </span>
                 )}
-                <p className="whitespace-pre-wrap">{m.text}</p>
+                {m.who === "ai" ? (
+                  <MarkdownMessage content={m.text} />
+                ) : (
+                  <p className="whitespace-pre-wrap">{m.text}</p>
+                )}
               </div>
             </motion.div>
           ))}
