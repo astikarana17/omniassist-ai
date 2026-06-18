@@ -26,13 +26,18 @@ const SUGGESTIONS = [
   "Is my health data private?",
 ];
 
-let nextId = 0;
-const mid = () => `dm_${++nextId}`;
+// Globally-unique id per message — never generated during render, so React keys
+// stay stable and unique (no duplicate-key warnings under Strict Mode re-renders).
+const newId = () =>
+  typeof crypto !== "undefined" && crypto.randomUUID
+    ? crypto.randomUUID()
+    : `dm_${Math.random().toString(36).slice(2)}_${Date.now()}`;
 
 export function LiveDemo() {
-  const [messages, setMessages] = useState<DemoMsg[]>([
+  // Lazy initializer so the greeting id is created exactly once.
+  const [messages, setMessages] = useState<DemoMsg[]>(() => [
     {
-      id: mid(),
+      id: newId(),
       who: "ai",
       text: "Hi! I'm your Healthcare AI Copilot. Ask me about the product or how it helps you understand your care. 👋",
     },
@@ -49,7 +54,7 @@ export function LiveDemo() {
     const q = text.trim();
     if (!q || busy) return;
     setInput("");
-    const history = [...messages, { id: mid(), who: "customer" as const, text: q }];
+    const history = [...messages, { id: newId(), who: "customer" as const, text: q }];
     setMessages(history);
     setBusy(true);
     try {
@@ -68,7 +73,7 @@ export function LiveDemo() {
       setMessages((m) => [
         ...m,
         {
-          id: mid(),
+          id: newId(),
           who: "ai",
           text: reply ?? "Sorry, I couldn't generate a response. Please try rephrasing.",
         },
@@ -77,7 +82,7 @@ export function LiveDemo() {
       setMessages((m) => [
         ...m,
         {
-          id: mid(),
+          id: newId(),
           who: "ai",
           text: "Hmm, I couldn't reach the demo server. Try again in a moment!",
         },
