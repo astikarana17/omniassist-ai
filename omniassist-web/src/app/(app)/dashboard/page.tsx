@@ -128,7 +128,7 @@ export default function DashboardPage() {
             <div className="pointer-events-none absolute -right-16 -top-20 h-60 w-60 rounded-full bg-primary/10 blur-3xl" />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/[0.05] via-transparent to-ai/[0.04]" />
             <div className="relative flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:p-7">
-              <AssistantAvatar size={84} />
+              <AssistantAvatar size={84} speaking />
               <div className="flex-1">
                 <span className="inline-flex items-center gap-1.5 rounded-md border border-border bg-secondary/60 px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
                   <Sparkles className="h-3 w-3 text-primary" /> AI Insight
@@ -149,7 +149,7 @@ export default function DashboardPage() {
         {/* Assistant */}
         <div className="surface flex flex-col rounded-2xl p-5">
           <div className="flex items-center gap-3">
-            <AssistantAvatar size={48} />
+            <AssistantAvatar size={48} speaking />
             <div>
               <p className="text-sm font-semibold">Aanya · Health AI</p>
               <p className="flex items-center gap-1.5 text-xs text-muted-foreground"><span className="h-1.5 w-1.5 rounded-full bg-success" /> Online</p>
