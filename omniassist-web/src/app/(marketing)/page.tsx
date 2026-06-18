@@ -33,14 +33,14 @@ const features = [
   { icon: Pill, title: "Prescription Intelligence", desc: "Upload a prescription photo — every medicine explained simply: what it's for, how it works, side effects, timing and food notes.", illo: "/illustrations/prescriptions.svg", tag: "Prescriptions" },
   { icon: FlaskConical, title: "Medical Report Analyzer", desc: "CBC, thyroid, sugar, lipid — values extracted, abnormalities flagged, explained in plain words.", illo: "/illustrations/reports.svg", tag: "Lab reports" },
   { icon: MessageCircleHeart, title: "AI Health Assistant", desc: "Ask about a medicine, symptom or result — clear answers, never a diagnosis.", illo: "/illustrations/assistant.svg", tag: "Assistant" },
-  { icon: Database, title: "250k+ Medicine Knowledge", desc: "Real Indian brand → composition intelligence grounds every answer, so Azithral becomes Azithromycin automatically.", illo: "/illustrations/doctors.svg", tag: "Knowledge base" },
+  { icon: Database, title: "Medicine Intelligence", desc: "Brand → composition intelligence grounds every answer, so Azithral is understood as Azithromycin automatically.", illo: "/illustrations/doctors.svg", tag: "Knowledge base" },
 ];
 
 const stats = [
-  { value: "250k+", label: "medicines in the knowledge base" },
-  { value: "<10s", label: "to explain a prescription" },
+  { value: "Free", label: "for patients — no card needed" },
+  { value: "Minutes", label: "to understand a prescription or report" },
   { value: "3", label: "AI tools: Rx · Reports · Assistant" },
-  { value: "24/7", label: "health answers, no waiting" },
+  { value: "24/7", label: "health answers, anytime" },
 ];
 
 const plans = [
