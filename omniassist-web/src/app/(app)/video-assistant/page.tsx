@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 // Public Trugen agent id (safe to expose — it only renders the embed). Override
 // via NEXT_PUBLIC_TRUGEN_AGENT_ID without a code change.
 const AGENT_ID =
-  process.env.NEXT_PUBLIC_TRUGEN_AGENT_ID ?? "77fe4d05-c38c-48bc-9aa0-8f7394e4f07d";
+  process.env.NEXT_PUBLIC_TRUGEN_AGENT_ID ?? "c91e3a02-e004-476e-abfb-b2e46bceca91";
 const EMBED_URL = `https://app.trugen.ai/embed/${AGENT_ID}`;
 
 export default function VideoAssistantPage() {
